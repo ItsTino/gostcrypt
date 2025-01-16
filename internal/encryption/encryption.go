@@ -1,4 +1,4 @@
-package encryption
+package gostencrypt
 
 import (
 	"crypto/aes"

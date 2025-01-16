@@ -5,10 +5,11 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"text/template"
-
 	"gostcrypt/internal/config"
+	gostencrypt "gostcrypt/internal/encryption"
+	"io/ioutil"
+
+	"text/template"
 )
 
 func main() {
@@ -42,8 +43,8 @@ func main() {
 		panic(err)
 	}
 
-	key := encryption.generateKey()
-	encrypted := encryption.encrypt(data, key)
+	key := gostencrypt.GenerateKey()
+	encrypted := gostencrypt.Encrypt(data, key)
 
 	// Generate stub
 	stubCode := generateStub(encrypted, key, cfg)
