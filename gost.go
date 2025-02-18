@@ -43,7 +43,7 @@ func main() {
 		panic(err)
 	}
 
-	key := gostencrypt.GenerateKey()
+	key := &gostencrypt.generateKey()
 	encrypted := gostencrypt.Encrypt(data, key)
 
 	// Generate stub
